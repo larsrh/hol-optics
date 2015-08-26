@@ -43,9 +43,7 @@ definition set :: "'a \<Rightarrow> 's \<Rightarrow> 's" where
 "set a s = (case get' s of None \<Rightarrow> s | Some _ \<Rightarrow> back a)"
 
 sublocale optional!: optional get' set
-apply unfold_locales
-apply (auto simp: set_def split: option.splits)
-done
+by unfold_locales (auto simp: set_def split: option.splits)
 
 lemma modify_eq[simp]: "optional.modify = modify"
 unfolding modify_def[abs_def] optional.modify_def[abs_def] set_def
@@ -53,10 +51,7 @@ by (rule ext)+ (auto split: option.splits)
 
 lemma modify'_eq[simp]: "optional.modify' = modify'"
 unfolding modify'_def[abs_def] optional.modify'_def[abs_def] set_def comp_def
-apply (rule ext)+
-apply (case_tac "get' s")
-apply auto
-done
+by (rule ext)+ (auto simp: map_option_case split: option.splits)
 
 end
 
