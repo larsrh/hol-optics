@@ -39,7 +39,7 @@ proof -
 qed
 
 locale product_iso =
-  left: iso f g + right: iso h i for f :: "'s \<Rightarrow> 'a" and g and h :: "'t \<Rightarrow> 'b" and i
+  fst: iso f g + snd: iso h i for f :: "'s \<Rightarrow> 'a" and g and h :: "'t \<Rightarrow> 'b" and i
 begin
 
 fun get :: "'s \<times> 't \<Rightarrow> 'a \<times> 'b" where
@@ -50,6 +50,18 @@ fun "back" :: "'a \<times> 'b \<Rightarrow> 's \<times> 't" where
 
 sublocale iso get "back"
 by unfold_locales auto
+
+end
+
+locale compose_iso_iso =
+  one: iso f g + two: iso h i for f :: "'s \<Rightarrow> 'a" and g and h :: "'a \<Rightarrow> 'b" and i
+begin
+
+definition "get = h \<circ> f"
+definition "back = g \<circ> i"
+
+sublocale iso get "back"
+by unfold_locales (auto simp: get_def back_def)
 
 end
 

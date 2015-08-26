@@ -34,4 +34,29 @@ by auto
 
 end
 
+locale compose_lens_lens =
+  one: lens f g + two: lens h i for f :: "'s \<Rightarrow> 'a" and g and h :: "'a \<Rightarrow> 'b" and i
+begin
+
+definition "get = h \<circ> f"
+definition set :: "'b \<Rightarrow> 's \<Rightarrow> 's" where "set b s = g (i b (f s)) s"
+
+sublocale lens get set
+by unfold_locales (auto simp: get_def set_def)
+
+end
+
+context compose_iso_iso begin
+
+sublocale lens_lens!: compose_lens_lens f "(iso.set g)" h "(iso.set i)" ..
+
+lemma get_eq[simp]: "lens_lens.get = get"
+unfolding lens_lens.get_def get_def ..
+
+lemma set_eq[simp]: "lens_lens.set = set"
+unfolding lens_lens.set_def[abs_def] one.set_def two.set_def local.set_def[abs_def]
+by (simp add: back_def)
+
+end
+
 end
