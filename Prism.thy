@@ -36,6 +36,40 @@ by (simp add: get'_def)
 
 end
 
+locale compose_prism_prism =
+  one: prism f g + two: prism h i for f :: "'s \<Rightarrow> 'a option" and g and h :: "'a \<Rightarrow> 'b option" and i
+begin
+
+definition "get' s = Option.bind (f s) h"
+definition "back = g \<circ> i"
+
+sublocale prism get' "back"
+proof
+  fix s b
+  assume "get' s = Some b"
+  then obtain a where "f s = Some a" "h a = Some b"
+    unfolding get'_def
+    by (meson bind_eq_Some_conv)
+  thus "back b = s"
+    by (auto simp: get'_def back_def)
+qed (auto simp: get'_def back_def)
+
+end
+
+context compose_iso_iso begin
+
+sublocale prism_prism!: compose_prism_prism "iso.get' f" g "iso.get' h" i ..
+
+lemma get'_eq[simp]: "prism_prism.get' = get'"
+unfolding prism_prism.get'_def[abs_def]
+unfolding get'_def one.get'_def two.get'_def
+by (auto simp: get_def)
+
+lemma back_eq[simp]: "prism_prism.back = back"
+unfolding back_def prism_prism.back_def ..
+
+end
+
 context type_definition begin
 
 definition get' :: "'a \<Rightarrow> 'b option" where

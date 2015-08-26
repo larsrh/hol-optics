@@ -48,7 +48,7 @@ end
 
 context compose_iso_iso begin
 
-sublocale lens_lens!: compose_lens_lens f "(iso.set g)" h "(iso.set i)" ..
+sublocale lens_lens!: compose_lens_lens f "iso.set g" h "iso.set i" ..
 
 lemma get_eq[simp]: "lens_lens.get = get"
 unfolding lens_lens.get_def get_def ..
