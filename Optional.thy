@@ -15,6 +15,12 @@ definition modify' :: "('a \<Rightarrow> 'a) \<Rightarrow> 's \<Rightarrow> 's o
 definition modify :: "('a \<Rightarrow> 'a) \<Rightarrow> 's \<Rightarrow> 's" where
 "modify f s = (case get' s of None \<Rightarrow> s | Some a \<Rightarrow> set (f a) s)"
 
+lemma modify_id[simp]: "modify id = id"
+unfolding modify_def[abs_def] id_def by (auto split: option.splits)
+
+lemma modify_comp[simp]: "modify (f \<circ> g) = modify f \<circ> modify g"
+unfolding modify_def[abs_def] comp_def by (auto split: option.splits)
+
 end
 
 context lens begin
