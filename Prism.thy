@@ -36,4 +36,30 @@ by (simp add: get'_def)
 
 end
 
+context type_definition begin
+
+definition get' :: "'a \<Rightarrow> 'b option" where
+"get' a = (if a \<in> A then Some (Abs a) else None)"
+
+definition set :: "'b \<Rightarrow> 'a" where
+"set = Rep"
+
+sublocale prism!: prism get' set
+proof
+  fix a
+  show "get' (set a) = Some a"
+    unfolding set_def get'_def
+    using Rep Rep_inverse by auto
+next
+  fix s a
+  assume "get' s = Some a"
+  hence "s \<in> A" "a = Abs s"
+    unfolding get'_def
+    by - (cases "s \<in> A"; auto)+
+  thus "set a = s"
+    unfolding set_def using Abs_inverse by auto
+qed
+
+end
+
 end
