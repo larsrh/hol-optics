@@ -66,4 +66,60 @@ by (simp add: get'_def)
 
 end
 
+locale compose_optional_optional =
+  one: optional f g + two: optional h i for f :: "'s \<Rightarrow> 'a option" and g and h :: "'a \<Rightarrow> 'b option" and i
+begin
+
+definition "get' s = Option.bind (f s) h"
+definition set :: "'b \<Rightarrow> 's \<Rightarrow> 's" where "set b = one.modify (i b)"
+
+sublocale optional get' set
+proof
+  fix b s
+  assume "get' s = Some b"
+  then obtain a where "f s = Some a" "h a = Some b"
+    unfolding get'_def
+    by (meson bind_eq_Some_conv)
+  thus "set b s = s"
+    unfolding set_def one.modify_def by simp
+next
+  fix b s
+  show "get' (set b s) = map_option (\<lambda>_. b) (get' s)"
+    unfolding get'_def set_def one.modify_def
+    by (smt bind_eq_Some_conv bind_lunit map_option_cong one.set_get' option.case_eq_if option.collapse option.map_id0 option.map_ident option.sel option.simps(4) option.simps(8) option.simps(9) two.set_get')
+next
+  fix b b' s
+  show "set b (set b' s) = set b s"
+    unfolding set_def
+    by (smt not_None_eq one.modify_def one.set_get' one.set_set option.case(1) option.case(2) option.map(2) two.set_set)
+qed
+
+end
+
+context compose_prism_prism begin
+
+sublocale optional_optional!: compose_optional_optional f "prism.set f g" h "prism.set h i" ..
+
+lemma get'_eq[simp]: "optional_optional.get' = get'"
+unfolding get'_def[abs_def] optional_optional.get'_def[abs_def] ..
+
+lemma modify_eq[simp]: "optional_optional.modify = modify"
+unfolding optional_optional.modify_def[abs_def] modify_def[abs_def]
+unfolding optional_optional.get'_def optional_optional.set_def
+unfolding get'_def
+apply (rule ext)+
+apply (case_tac "Option.bind (f s) h"; simp)
+unfolding back_def comp_apply
+unfolding one.modify_def two.set_def
+by (smt bind_eq_Some_conv option.simps(5))
+
+lemma set_eq[simp]: "optional_optional.set = set"
+unfolding set_def[abs_def] optional_optional.set_def[abs_def]
+unfolding get'_def back_def comp_apply
+apply (rule ext)+
+unfolding one.optional.modify_def
+by (smt bind_lunit bind_lzero not_None_eq one.optional.get'_set one.set_def option.case_eq_if option.sel two.set_def)
+
+end
+
 end

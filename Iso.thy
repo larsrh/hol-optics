@@ -30,13 +30,17 @@ next
     using assms unfolding bij_betw_def by (simp add: surj_f_inv_f)
 qed
 
-lemma rev_iso:
-  assumes "iso f g" shows "iso g f"
-proof -
-  interpret iso f g using assms .
-  show ?thesis
-    by unfold_locales auto
-qed
+locale rev_iso =
+  inner: iso f g for f g
+begin
+
+definition "get = g"
+definition "back = f"
+
+sublocale iso "back" get
+by unfold_locales (auto simp: get_def back_def)
+
+end
 
 locale product_iso =
   fst: iso f g + snd: iso h i for f :: "'s \<Rightarrow> 'a" and g and h :: "'t \<Rightarrow> 'b" and i
