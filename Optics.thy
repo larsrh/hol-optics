@@ -58,4 +58,22 @@ begin
   by unfold_locales (auto simp: get'_def set_def split: list.splits)
 end
 
+locale prod_fst_lens
+begin
+  definition [optics_def]: "get = fst"
+  fun set where [optics_def, simp del]: "set a (_, b) = (a, b)"
+
+  sublocale lens get set
+  by unfold_locales (auto simp: optics_def)
+end
+
+locale prod_snd_lens
+begin
+  definition [optics_def]: "get = snd"
+  fun set where [optics_def, simp del]: "set b (a, _) = (a, b)"
+
+  sublocale lens get set
+  by unfold_locales (auto simp: optics_def)
+end
+
 end
