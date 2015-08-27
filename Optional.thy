@@ -101,22 +101,41 @@ sublocale optional_optional!: compose_optional_optional f "prism.set f g" h "pri
 lemma get'_eq[simp]: "optional_optional.get' = get'"
 unfolding get'_def[abs_def] optional_optional.get'_def[abs_def] ..
 
+lemma set_eq[simp]: "optional_optional.set = set"
+unfolding set_def[abs_def] optional_optional.set_def[abs_def] one.optional.modify_def[abs_def]
+unfolding get'_def back_def comp_apply
+by (rule ext)+ (smt bind_lunit bind_lzero not_None_eq one.optional.get'_set one.set_def option.case_eq_if option.sel two.set_def)
+
 lemma modify_eq[simp]: "optional_optional.modify = modify"
 unfolding optional_optional.modify_def[abs_def] modify_def[abs_def]
-unfolding optional_optional.get'_def optional_optional.set_def
-unfolding get'_def
-apply (rule ext)+
-apply (case_tac "Option.bind (f s) h"; simp)
-unfolding back_def comp_apply
-unfolding one.modify_def two.set_def
-by (smt bind_eq_Some_conv option.simps(5))
+unfolding get'_eq set_eq set_def
+by (rule ext)+ (auto split: option.splits)
+
+lemma modify'_eq[simp]: "optional_optional.modify' = modify'"
+unfolding optional_optional.modify'_def[abs_def] modify'_def[abs_def]
+unfolding set_eq get'_eq set_def
+by (rule ext)+ (auto cong: map_option_cong)
+
+end
+
+context compose_lens_lens begin
+
+sublocale optional_optional!: compose_optional_optional "lens.get' f" g "lens.get' h" i ..
+
+lemma get'_eq[simp]: "optional_optional.get' = get'"
+unfolding get'_def[abs_def] optional_optional.get'_def[abs_def]
+unfolding get_def one.get'_def two.get'_def
+by auto
 
 lemma set_eq[simp]: "optional_optional.set = set"
 unfolding set_def[abs_def] optional_optional.set_def[abs_def]
-unfolding get'_def back_def comp_apply
-apply (rule ext)+
-unfolding one.optional.modify_def
-by (smt bind_lunit bind_lzero not_None_eq one.optional.get'_set one.set_def option.case_eq_if option.sel two.set_def)
+by (rule ext)+ (simp add: one.modify_def)
+
+lemma modify_eq[simp]: "optional_optional.modify = modify"
+unfolding optional_optional.modify_def[abs_def] modify_def[abs_def]
+unfolding get'_eq set_eq
+unfolding set_def get'_def
+by simp
 
 end
 
