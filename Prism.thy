@@ -9,10 +9,10 @@ locale prism =
 begin
 
 definition modify' :: "('a \<Rightarrow> 'a) \<Rightarrow> 's \<Rightarrow> 's option" where
-[optics_basic]: "modify' f s = map_option (back \<circ> f) (get' s)"
+[optics]: "modify' f s = map_option (back \<circ> f) (get' s)"
 
 definition modify :: "('a \<Rightarrow> 'a) \<Rightarrow> 's \<Rightarrow> 's" where
-[optics_basic]: "modify f s = (case get' s of None \<Rightarrow> s | Some a \<Rightarrow> back (f a))"
+[optics]: "modify f s = (case get' s of None \<Rightarrow> s | Some a \<Rightarrow> back (f a))"
 
 lemma modify_id[simp]: "modify id = id"
 unfolding modify_def[abs_def] id_def by (auto split: option.splits)
@@ -24,7 +24,7 @@ end
 
 context iso begin
 
-definition [optics_basic]: "get' = Some \<circ> get"
+definition [optics]: "get' = Some \<circ> get"
 
 sublocale prism!: prism get' "back"
 by unfold_locales (auto simp: get'_def)
@@ -39,8 +39,8 @@ locale compose_prism_prism =
   one: prism f g + two: prism h i for f :: "'s \<Rightarrow> 'a option" and g and h :: "'a \<Rightarrow> 'b option" and i
 begin
 
-definition [optics_basic]: "get' s = Option.bind (f s) h"
-definition [optics_basic]: "back = g \<circ> i"
+definition [optics]: "get' s = Option.bind (f s) h"
+definition [optics]: "back = g \<circ> i"
 
 sublocale prism get' "back"
 proof
@@ -72,10 +72,10 @@ end
 context type_definition begin
 
 definition get' :: "'a \<Rightarrow> 'b option" where
-[optics_def]: "get' a = (if a \<in> A then Some (Abs a) else None)"
+[optics]: "get' a = (if a \<in> A then Some (Abs a) else None)"
 
 definition set :: "'b \<Rightarrow> 'a" where
-[optics_def]: "set = Rep"
+[optics]: "set = Rep"
 
 sublocale prism!: prism get' set
 proof

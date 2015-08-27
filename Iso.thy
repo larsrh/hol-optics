@@ -8,7 +8,7 @@ locale iso =
 begin
 
 definition modify :: "('a \<Rightarrow> 'a) \<Rightarrow> 's \<Rightarrow> 's" where
-[optics_basic]: "modify f s = back (f (get s))"
+[optics]: "modify f s = back (f (get s))"
 
 lemma modify_id[simp]: "modify id = id"
 unfolding modify_def[abs_def] id_def by simp
@@ -34,8 +34,8 @@ locale rev_iso =
   inner: iso f g for f g
 begin
 
-definition [optics_basic]: "get = g"
-definition [optics_basic]: "back = f"
+definition [optics]: "get = g"
+definition [optics]: "back = f"
 
 sublocale iso "back" get
 by unfold_locales (auto simp: get_def back_def)
@@ -61,8 +61,8 @@ locale compose_iso_iso =
   one: iso f g + two: iso h i for f :: "'s \<Rightarrow> 'a" and g and h :: "'a \<Rightarrow> 'b" and i
 begin
 
-definition [optics_basic]: "get = h \<circ> f"
-definition [optics_basic]: "back = g \<circ> i"
+definition [optics]: "get = h \<circ> f"
+definition [optics]: "back = g \<circ> i"
 
 sublocale iso get "back"
 by unfold_locales (auto simp: get_def back_def)

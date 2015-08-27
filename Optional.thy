@@ -10,10 +10,10 @@ locale optional =
 begin
 
 definition modify' :: "('a \<Rightarrow> 'a) \<Rightarrow> 's \<Rightarrow> 's option" where
-[optics_basic]: "modify' f s = map_option (\<lambda>a. set (f a) s) (get' s)"
+[optics]: "modify' f s = map_option (\<lambda>a. set (f a) s) (get' s)"
 
 definition modify :: "('a \<Rightarrow> 'a) \<Rightarrow> 's \<Rightarrow> 's" where
-[optics_basic]: "modify f s = (case get' s of None \<Rightarrow> s | Some a \<Rightarrow> set (f a) s)"
+[optics]: "modify f s = (case get' s of None \<Rightarrow> s | Some a \<Rightarrow> set (f a) s)"
 
 lemma modify_id[simp]: "modify id = id"
 unfolding modify_def[abs_def] id_def by (auto split: option.splits)
@@ -25,7 +25,7 @@ end
 
 context lens begin
 
-definition [optics_basic]: "get' = Some \<circ> get"
+definition [optics]: "get' = Some \<circ> get"
 
 sublocale optional!: optional get' set
 by unfold_locales (auto simp: get'_def)
@@ -38,7 +38,7 @@ end
 
 context prism begin
 
-definition set where [optics_basic]: "set a s = (case get' s of None \<Rightarrow> s | Some _ \<Rightarrow> back a)"
+definition set where [optics]: "set a s = (case get' s of None \<Rightarrow> s | Some _ \<Rightarrow> back a)"
 
 sublocale optional!: optional get' set
 by unfold_locales (auto simp: set_def split: option.splits)
@@ -68,8 +68,8 @@ locale compose_optional_optional =
   one: optional f g + two: optional h i for f :: "'s \<Rightarrow> 'a option" and g and h :: "'a \<Rightarrow> 'b option" and i
 begin
 
-definition [optics_basic]: "get' s = Option.bind (f s) h"
-definition set where [optics_basic]: "set b = one.modify (i b)"
+definition [optics]: "get' s = Option.bind (f s) h"
+definition set where [optics]: "set b = one.modify (i b)"
 
 sublocale optional get' set
 proof

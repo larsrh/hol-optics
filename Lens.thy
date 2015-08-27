@@ -10,7 +10,7 @@ locale lens =
 begin
 
 definition modify :: "('a \<Rightarrow> 'a) \<Rightarrow> 's \<Rightarrow> 's" where
-[optics_basic]: "modify f s = set (f (get s)) s"
+[optics]: "modify f s = set (f (get s)) s"
 
 lemma modify_id[simp]: "modify id = id"
 unfolding modify_def[abs_def] id_def by auto
@@ -22,7 +22,7 @@ end
 
 context iso begin
 
-definition set where [optics_basic]: "set a _ = back a"
+definition set where [optics]: "set a _ = back a"
 
 sublocale lens!: lens get set
 by unfold_locales (auto simp: set_def)
@@ -37,8 +37,8 @@ locale compose_lens_lens =
   one: lens f g + two: lens h i for f :: "'s \<Rightarrow> 'a" and g and h :: "'a \<Rightarrow> 'b" and i
 begin
 
-definition [optics_basic]: "get = h \<circ> f"
-definition set where [optics_basic]: "set b s = g (i b (f s)) s"
+definition [optics]: "get = h \<circ> f"
+definition set where [optics]: "set b s = g (i b (f s)) s"
 
 sublocale lens get set
 by unfold_locales (auto simp: get_def set_def)
