@@ -11,11 +11,14 @@ interpretation l2!: list_head_optional .
 
 interpretation l!: compose_optional_optional l1.get' l1.set l2.get' l2.set ..
 
-lemma "l.get' [1, 2, 3] = Some 2"
-by eval_optics
-
-lemma "l.get' [1] = None"
-by eval_optics
+lemma
+  "l.get' [1, 2, 3] = Some 2"
+  "l.get' [1] = None"
+  "l.set 0 [1, 2, 3] = [1, 0, 3]"
+  "l.set 0 [1] = [1]"
+  "l.modify (op + 1) [1, 2, 3] = [1, 3, 3]"
+  "l.modify (op + 1) [1] = [1]"
+by eval_optics+
 
 end
 
@@ -30,11 +33,14 @@ interpretation l3!: list_head_optional .
 interpretation l12!: compose_optional_optional l1.get' l1.set l2.get' l2.set ..
 interpretation l!: compose_optional_optional l12.get' l12.set l3.get' l3.set ..
 
-lemma "l.get' [1, 2, 3] = Some 2"
-by eval_optics
-
-lemma "l.get' [1] = None"
-by eval_optics
+lemma
+  "l.get' [1, 2, 3] = Some 2"
+  "l.get' [1] = None"
+  "l.set 0 [1, 2, 3] = [1, 0, 3]"
+  "l.set 0 [1] = [1]"
+  "l.modify (op + 1) [1, 2, 3] = [1, 3, 3]"
+  "l.modify (op + 1) [1] = [1]"
+by eval_optics+
 
 end
 
