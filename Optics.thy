@@ -76,4 +76,34 @@ begin
   by unfold_locales (auto simp: optics)
 end
 
+locale fun_iso =
+  inner: iso f g for f g
+begin
+  definition [optics]: "get F = (\<lambda>x. f (F x))"
+  definition [optics]: "back F = (\<lambda>x. g (F x))"
+
+  sublocale iso get "back"
+  by unfold_locales (auto simp: optics)
+end
+
+locale fun_at_lens =
+  fixes at :: "'a::type"
+begin
+  definition [optics]: "get F = F at"
+  definition set where [optics]: "set v F = F(at := v)"
+
+  sublocale lens get set
+  by unfold_locales (auto simp: optics)
+end
+
+locale list_at_optional =
+  fixes index :: nat
+begin
+  definition [optics]: "get' xs = (if index < length xs then Some (xs ! index) else None)"
+  definition set where [optics]: "set x xs = xs[index := x]"
+
+  sublocale optional get' set
+  by unfold_locales (auto simp: optics split: if_splits)
+end
+
 end
