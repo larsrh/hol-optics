@@ -5,7 +5,7 @@ begin
 locale id_iso
 begin
   definition [optics]: "get = id"
-  definition [optics]:"back = id"
+  definition [optics]: "back = id"
 
   sublocale iso get "back"
   by unfold_locales (simp add: get_def back_def)+
@@ -14,8 +14,8 @@ end
 locale bij_iso =
   fixes f assumes bij[intro]: "bij f"
 begin
-  definition [optics]:"get = f"
-  definition [optics]:"back = inv f"
+  definition [optics]: "get = f"
+  definition [optics]: "back = inv f"
 
   sublocale iso get "back"
   unfolding get_def back_def

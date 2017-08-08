@@ -27,7 +27,7 @@ context lens begin
 
 definition [optics]: "get' = Some \<circ> get"
 
-sublocale optional!: optional get' set
+sublocale optional: optional get' set
 by unfold_locales (auto simp: get'_def)
 
 lemma modify_eq[simp]: "optional.modify = modify"
@@ -40,7 +40,7 @@ context prism begin
 
 definition set where [optics]: "set a s = (case get' s of None \<Rightarrow> s | Some _ \<Rightarrow> back a)"
 
-sublocale optional!: optional get' set
+sublocale optional: optional get' set
 by unfold_locales (auto simp: set_def split: option.splits)
 
 lemma modify_eq[simp]: "optional.modify = modify"
@@ -84,19 +84,19 @@ next
   fix b s
   show "get' (set b s) = map_option (\<lambda>_. b) (get' s)"
     unfolding get'_def set_def one.modify_def
-    by (smt bind_eq_Some_conv bind_lunit map_option_cong one.set_get' option.case_eq_if option.collapse option.map_id0 option.map_ident option.sel option.simps(4) option.simps(8) option.simps(9) two.set_get')
+    by (auto split: option.splits)
 next
   fix b b' s
   show "set b (set b' s) = set b s"
-    unfolding set_def
-    by (smt not_None_eq one.modify_def one.set_get' one.set_set option.case(1) option.case(2) option.map(2) two.set_set)
+    unfolding set_def one.modify_def
+    by (auto split: option.splits)
 qed
 
 end
 
 context compose_prism_prism begin
 
-sublocale optional_optional!: compose_optional_optional f "prism.set f g" h "prism.set h i" ..
+sublocale optional_optional: compose_optional_optional f "prism.set f g" h "prism.set h i" ..
 
 lemma get'_eq[simp]: "optional_optional.get' = get'"
 unfolding get'_def[abs_def] optional_optional.get'_def[abs_def] ..
@@ -104,7 +104,8 @@ unfolding get'_def[abs_def] optional_optional.get'_def[abs_def] ..
 lemma set_eq[simp]: "optional_optional.set = set"
 unfolding set_def[abs_def] optional_optional.set_def[abs_def] one.optional.modify_def[abs_def]
 unfolding get'_def back_def comp_apply
-by (rule ext)+ (smt bind_lunit bind_lzero not_None_eq one.optional.get'_set one.set_def option.case_eq_if option.sel two.set_def)
+unfolding one.set_def two.set_def
+by (rule ext)+ (auto split: option.splits)
 
 lemma modify_eq[simp]: "optional_optional.modify = modify"
 unfolding optional_optional.modify_def[abs_def] modify_def[abs_def]
@@ -120,7 +121,7 @@ end
 
 context compose_lens_lens begin
 
-sublocale optional_optional!: compose_optional_optional "lens.get' f" g "lens.get' h" i ..
+sublocale optional_optional: compose_optional_optional "lens.get' f" g "lens.get' h" i ..
 
 lemma get'_eq[simp]: "optional_optional.get' = get'"
 unfolding get'_def[abs_def] optional_optional.get'_def[abs_def]

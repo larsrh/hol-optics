@@ -26,7 +26,7 @@ context iso begin
 
 definition [optics]: "get' = Some \<circ> get"
 
-sublocale prism!: prism get' "back"
+sublocale prism: prism get' "back"
 by unfold_locales (auto simp: get'_def)
 
 lemma prism_modify_eq[simp]: "prism.modify = modify"
@@ -57,7 +57,7 @@ end
 
 context compose_iso_iso begin
 
-sublocale prism_prism!: compose_prism_prism "iso.get' f" g "iso.get' h" i ..
+sublocale prism_prism: compose_prism_prism "iso.get' f" g "iso.get' h" i ..
 
 lemma get'_eq[simp]: "prism_prism.get' = get'"
 unfolding prism_prism.get'_def[abs_def]
@@ -77,7 +77,7 @@ definition get' :: "'a \<Rightarrow> 'b option" where
 definition set :: "'b \<Rightarrow> 'a" where
 [optics]: "set = Rep"
 
-sublocale prism!: prism get' set
+sublocale prism: prism get' set
 proof
   fix a
   show "get' (set a) = Some a"

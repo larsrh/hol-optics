@@ -24,7 +24,7 @@ context iso begin
 
 definition set where [optics]: "set a _ = back a"
 
-sublocale lens!: lens get set
+sublocale lens: lens get set
 by unfold_locales (auto simp: set_def)
 
 lemma lens_modify_eq[simp]: "lens.modify = modify"
@@ -47,7 +47,7 @@ end
 
 context compose_iso_iso begin
 
-sublocale lens_lens!: compose_lens_lens f "iso.set g" h "iso.set i" ..
+sublocale lens_lens: compose_lens_lens f "iso.set g" h "iso.set i" ..
 
 lemma get_eq[simp]: "lens_lens.get = get"
 unfolding lens_lens.get_def get_def ..
